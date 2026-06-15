@@ -1,9 +1,10 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+from data_loader import load_team_data
 
 st.set_page_config(
-    page_title="NFL Analytics Dashboard",
+    page_title="NFL Analytics Platform",
     page_icon="🏈",
     layout="wide"
 )
@@ -13,12 +14,12 @@ st.markdown(
     <style>
     .stApp {
         background-color: #f5f7fb;
-        font-family: 'Inter', 'Arial', sans-serif;
+        font-family: Arial, sans-serif;
     }
 
-    .header-box {
+    .header-box, .team-card {
         background: white;
-        padding: 32px;
+        padding: 28px;
         border-radius: 18px;
         border: 1px solid #e5e7eb;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
@@ -29,18 +30,10 @@ st.markdown(
         font-size: 2.5rem;
         font-weight: 800;
         color: #111827;
-        margin-bottom: 6px;
     }
 
-    .subtitle {
-        font-size: 1rem;
+    .subtitle, .note {
         color: #4b5563;
-        margin-bottom: 8px;
-    }
-
-    .note {
-        font-size: 0.85rem;
-        color: #6b7280;
     }
 
     .section-title {
@@ -50,118 +43,52 @@ st.markdown(
         margin-top: 25px;
         margin-bottom: 12px;
     }
-
-    .team-card {
-        background: white;
-        padding: 24px;
-        border-radius: 18px;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-    }
-
-    .team-card h3 {
-        color: #111827;
-        margin-bottom: 10px;
-    }
-
-    .team-card p {
-        color: #374151;
-        font-size: 1rem;
-        line-height: 1.6;
-    }
-
-    div[data-testid="stMetric"] {
-        background: white;
-        border: 1px solid #e5e7eb;
-        padding: 18px;
-        border-radius: 16px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-    }
-
-    div[data-testid="stMetricValue"] {
-        color: #111827;
-        font-size: 1.4rem;
-    }
-
-    div[data-testid="stMetricLabel"] {
-        color: #6b7280;
-    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
+df = load_team_data()
+
 st.markdown(
     """
     <div class="header-box">
-        <div class="main-title">NFL Analytics Dashboard</div>
+        <div class="main-title">NFL Analytics Platform</div>
         <div class="subtitle">
-            A clean football analytics dashboard for exploring team performance, scoring trends, and win metrics.
+            A sports analytics platform built with Python, Pandas, Streamlit, and NFL team data.
         </div>
         <div class="note">
-            Note: This version uses sample team data while the real NFL data source is being integrated.
+            Data source: local NFL team dataset, prepared for future live data integration.
         </div>
     </div>
     """,
     unsafe_allow_html=True
 )
 
-@st.cache_data
-def load_team_data():
-    url = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/team_desc.csv"
-    teams = pd.read_csv(url)
+st.markdown('<div class="section-title">League Overview</div>', unsafe_allow_html=True)
 
-    teams = teams[
-        [
-            "team_abbr",
-            "team_name",
-            "team_id",
-            "team_conf",
-            "team_division",
-            "team_color",
-            "team_logo_espn"
-        ]
-    ]
+col1, col2, col3 = st.columns(3)
 
-    teams = teams.rename(
-        columns={
-            "team_abbr": "Abbreviation",
-            "team_name": "Team",
-            "team_id": "Team ID",
-            "team_conf": "Conference",
-            "team_division": "Division",
-            "team_color": "Primary Color",
-            "team_logo_espn": "Logo"
-        }
-    )
+col1.metric("Total Teams", len(df))
+col2.metric("Conferences", df["Conference"].nunique())
+col3.metric("Divisions", df["Division"].nunique())
 
-    return teams
-
-df = load_team_data()
-df = pd.DataFrame(data)
-df["Point Differential"] = df["Points Scored"] - df["Points Allowed"]
-df["Win Percentage"] = (df["Wins"] / (df["Wins"] + df["Losses"])).round(3)
-
-st.markdown('<div class="section-title">League Snapshot</div>', unsafe_allow_html=True)
-
-col1, col2, col3, col4 = st.columns(4)
-
-# col1.metric("Most Wins", df.loc[df["Wins"].idxmax(), "Team"], int(df["Wins"].max()))
-# col2.metric("Highest Scoring", df.loc[df["Points Scored"].idxmax(), "Team"], int(df["Points Scored"].max()))
-# col3.metric("Best Defense", df.loc[df["Points Allowed"].idxmin(), "Team"], int(df["Points Allowed"].min()))
-# col4.metric("Best Point Differential", df.loc[df["Point Differential"].idxmax(), "Team"], int(df["Point Differential"].max()))
-
-st.markdown('<div class="section-title">Explore a Team</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">Team Explorer</div>', unsafe_allow_html=True)
 
 left, right = st.columns([1, 2])
 
 with left:
-    selected_team = st.selectbox("Select Team", df["Team"])
-    selected_stat = st.selectbox(
-        "Select Statistic",
-        ["Wins", "Losses", "Points Scored", "Points Allowed", "Point Differential", "Win Percentage"]
-    )
+    search = st.text_input("Search for a team")
+
+    filtered_df = df.copy()
+
+    if search:
+        filtered_df = filtered_df[
+            filtered_df["Team"].str.contains(search, case=False, na=False)
+            | filtered_df["Abbreviation"].str.contains(search, case=False, na=False)
+        ]
+
+    selected_team = st.selectbox("Select Team", filtered_df["Team"])
 
 with right:
     team = df[df["Team"] == selected_team].iloc[0]
@@ -169,33 +96,46 @@ with right:
     st.markdown(
         f"""
         <div class="team-card">
-            <h3>{selected_team}</h3>
+            <h3>{team["Team"]}</h3>
             <p>
-                <strong>Record:</strong> {int(team["Wins"])}-{int(team["Losses"])}<br>
-                <strong>Points Scored:</strong> {int(team["Points Scored"])}<br>
-                <strong>Points Allowed:</strong> {int(team["Points Allowed"])}<br>
-                <strong>Point Differential:</strong> {int(team["Point Differential"])}<br>
-                <strong>Win Percentage:</strong> {team["Win Percentage"]}
+                <strong>Abbreviation:</strong> {team["Abbreviation"]}<br>
+                <strong>Conference:</strong> {team["Conference"]}<br>
+                <strong>Division:</strong> {team["Division"]}
             </p>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-st.markdown('<div class="section-title">Team Statistics Table</div>', unsafe_allow_html=True)
-st.dataframe(df, use_container_width=True)
+st.markdown('<div class="section-title">NFL Teams Table</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="section-title">Performance Comparison</div>', unsafe_allow_html=True)
+st.dataframe(
+    df[["Abbreviation", "Team", "Conference", "Division"]],
+    use_container_width=True
+)
 
-sorted_df = df.sort_values(by=selected_stat, ascending=False)
+st.markdown('<div class="section-title">Teams by Conference</div>', unsafe_allow_html=True)
 
-fig, ax = plt.subplots(figsize=(14, 6))
-ax.bar(sorted_df["Team"], sorted_df[selected_stat])
+conference_counts = df["Conference"].value_counts()
 
-ax.set_title(f"NFL Teams by {selected_stat}", fontsize=16, fontweight="bold")
-ax.set_xlabel("Team")
-ax.set_ylabel(selected_stat)
-plt.xticks(rotation=90)
-plt.tight_layout()
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.bar(conference_counts.index, conference_counts.values)
+ax.set_title("NFL Teams by Conference")
+ax.set_xlabel("Conference")
+ax.set_ylabel("Number of Teams")
 
 st.pyplot(fig)
+
+st.markdown('<div class="section-title">Teams by Division</div>', unsafe_allow_html=True)
+
+division_counts = df["Division"].value_counts().sort_index()
+
+fig2, ax2 = plt.subplots(figsize=(10, 5))
+ax2.bar(division_counts.index, division_counts.values)
+ax2.set_title("NFL Teams by Division")
+ax2.set_xlabel("Division")
+ax2.set_ylabel("Number of Teams")
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
+
+st.pyplot(fig2)
