@@ -107,23 +107,38 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-data = {
-    "Team": [
-        "Arizona Cardinals", "Atlanta Falcons", "Baltimore Ravens", "Buffalo Bills",
-        "Carolina Panthers", "Chicago Bears", "Cincinnati Bengals", "Cleveland Browns",
-        "Dallas Cowboys", "Denver Broncos", "Detroit Lions", "Green Bay Packers",
-        "Houston Texans", "Indianapolis Colts", "Jacksonville Jaguars", "Kansas City Chiefs",
-        "Las Vegas Raiders", "Los Angeles Chargers", "Los Angeles Rams", "Miami Dolphins",
-        "Minnesota Vikings", "New England Patriots", "New Orleans Saints", "New York Giants",
-        "New York Jets", "Philadelphia Eagles", "Pittsburgh Steelers", "San Francisco 49ers",
-        "Seattle Seahawks", "Tampa Bay Buccaneers", "Tennessee Titans", "Washington Commanders"
-    ],
-    "Wins": [4, 8, 12, 13, 5, 5, 9, 3, 7, 10, 15, 11, 10, 8, 4, 15, 4, 11, 10, 8, 14, 4, 5, 3, 5, 14, 10, 6, 10, 10, 3, 12],
-    "Losses": [13, 9, 5, 4, 12, 12, 8, 14, 10, 7, 2, 6, 7, 9, 13, 2, 13, 6, 7, 9, 3, 13, 12, 14, 12, 3, 7, 11, 7, 7, 14, 5],
-    "Points Scored": [400, 389, 518, 525, 341, 310, 472, 258, 350, 425, 564, 460, 372, 377, 320, 385, 309, 402, 367, 345, 432, 289, 338, 273, 338, 463, 380, 389, 375, 502, 311, 485],
-    "Points Allowed": [449, 423, 361, 368, 534, 370, 434, 435, 468, 311, 342, 338, 372, 427, 435, 326, 434, 301, 386, 364, 332, 417, 398, 415, 404, 303, 347, 436, 368, 385, 460, 391]
-}
+@st.cache_data
+def load_team_data():
+    url = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/team_desc.csv"
+    teams = pd.read_csv(url)
 
+    teams = teams[
+        [
+            "team_abbr",
+            "team_name",
+            "team_id",
+            "team_conf",
+            "team_division",
+            "team_color",
+            "team_logo_espn"
+        ]
+    ]
+
+    teams = teams.rename(
+        columns={
+            "team_abbr": "Abbreviation",
+            "team_name": "Team",
+            "team_id": "Team ID",
+            "team_conf": "Conference",
+            "team_division": "Division",
+            "team_color": "Primary Color",
+            "team_logo_espn": "Logo"
+        }
+    )
+
+    return teams
+
+df = load_team_data()
 df = pd.DataFrame(data)
 df["Point Differential"] = df["Points Scored"] - df["Points Allowed"]
 df["Win Percentage"] = (df["Wins"] / (df["Wins"] + df["Losses"])).round(3)
@@ -132,10 +147,10 @@ st.markdown('<div class="section-title">League Snapshot</div>', unsafe_allow_htm
 
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("Most Wins", df.loc[df["Wins"].idxmax(), "Team"], int(df["Wins"].max()))
-col2.metric("Highest Scoring", df.loc[df["Points Scored"].idxmax(), "Team"], int(df["Points Scored"].max()))
-col3.metric("Best Defense", df.loc[df["Points Allowed"].idxmin(), "Team"], int(df["Points Allowed"].min()))
-col4.metric("Best Point Differential", df.loc[df["Point Differential"].idxmax(), "Team"], int(df["Point Differential"].max()))
+# col1.metric("Most Wins", df.loc[df["Wins"].idxmax(), "Team"], int(df["Wins"].max()))
+# col2.metric("Highest Scoring", df.loc[df["Points Scored"].idxmax(), "Team"], int(df["Points Scored"].max()))
+# col3.metric("Best Defense", df.loc[df["Points Allowed"].idxmin(), "Team"], int(df["Points Allowed"].min()))
+# col4.metric("Best Point Differential", df.loc[df["Point Differential"].idxmax(), "Team"], int(df["Point Differential"].max()))
 
 st.markdown('<div class="section-title">Explore a Team</div>', unsafe_allow_html=True)
 
