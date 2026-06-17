@@ -32,14 +32,11 @@ The NFL Analytics Platform was built as a portfolio project to demonstrate data 
 ### Home Page
 ![Home Page](assets/home.png)
 
-### Team Explorer
-![Team Explorer](assets/team-explorer.png)
-
 ### Team Comparison
 ![Team Comparison](assets/team-comparison.png)
 
 ### League Leaders
-![League Leaders](assets/league-leaders.png)
+![League Leaders](assets/league_leaders_2.png)
 
 ### About Page
 ![About Page](assets/about.png)
@@ -86,9 +83,8 @@ nfl-analytics-dashboard/
 │
 ├── assets/
 │   ├── home.png
-│   ├── team-explorer.png
 │   ├── team-comparison.png
-│   ├── league-leaders.png
+│   ├── league_leaders_2.png
 │   └── about.png
 │
 └── pages/
