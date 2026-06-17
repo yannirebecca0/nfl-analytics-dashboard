@@ -112,7 +112,8 @@ Through this project, I strengthened my understanding of:
 
 ## 🗺️ Future Improvements
 
-- Integrate live NFL data from a public API or data source
+- Currently working on integrating live NFL data from a public API or data source
+
 - Add official team logos
 - Add historical season filtering
 - Add player-level statistics
