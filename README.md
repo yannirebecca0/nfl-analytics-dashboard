@@ -2,11 +2,11 @@
 
 A modern, multi-page sports analytics platform built with Python, Pandas, Streamlit, and Matplotlib. This project allows users to explore NFL teams, compare performance metrics, view league leaders, and interact with football data through a clean dashboard-style interface.
 
-## 🚀 Project Overview
+## Project Overview
 
 The NFL Analytics Platform was built as a portfolio project to demonstrate data analysis, software engineering, interactive visualization, and user interface design. The platform focuses on making NFL team data easier to explore through searchable filters, comparison tools, leaderboards, and visual insights.
 
-## ✨ Features
+## Features
 
 - Multi-page Streamlit application
 - Interactive landing page
@@ -18,7 +18,7 @@ The NFL Analytics Platform was built as a portfolio project to demonstrate data 
 - Clean, modern dashboard-style UI
 - Modular data loading with Pandas
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - Python
 - Streamlit
@@ -27,7 +27,19 @@ The NFL Analytics Platform was built as a portfolio project to demonstrate data 
 - CSV data processing
 - Git and GitHub
 
-## 📸 Screenshots
+## What I Learned
+
+Through this project, I strengthened my understanding of:
+
+- Building interactive web applications with Streamlit
+- Loading and transforming data with Pandas
+- Creating data visualizations with Matplotlib
+- Organizing a multi-page Python project
+- Designing a user-friendly analytics interface
+- Using Git and GitHub for version control
+- Presenting technical projects professionally
+
+## Screenshots
 
 ### Home Page
 ![Home Page](assets/home.png)
@@ -41,7 +53,7 @@ The NFL Analytics Platform was built as a portfolio project to demonstrate data 
 ### About Page
 ![About Page](assets/about.png)
 
-## ⚙️ Installation
+## Installation
 
 1. Clone the repository:
 
@@ -67,7 +79,7 @@ pip3 install -r requirements.txt
 streamlit run 🏈_NFL_Analytics_Platform.py
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 nfl-analytics-dashboard/
@@ -94,22 +106,9 @@ nfl-analytics-dashboard/
     └── 4_ℹ️_About.py
 ```
 
-## 🧠 What I Learned
+## Future Improvements
 
-Through this project, I strengthened my understanding of:
-
-- Building interactive web applications with Streamlit
-- Loading and transforming data with Pandas
-- Creating data visualizations with Matplotlib
-- Organizing a multi-page Python project
-- Designing a user-friendly analytics interface
-- Using Git and GitHub for version control
-- Presenting technical projects professionally
-
-## 🗺️ Future Improvements
-
-- Currently working on integrating live NFL data from a public API or data source
-
+- *Currently* working on integrating live NFL data from a public API or data source
 - Add official team logos
 - Add historical season filtering
 - Add player-level statistics
@@ -117,6 +116,12 @@ Through this project, I strengthened my understanding of:
 - Add trend visualizations across multiple seasons
 - Deploy the app online
 
-## 🎯 Purpose
+## Author
+
+Rebecca Yanni
+
+Computer Science Student at Rutgers University–Newark
+
+## Preview
 
 This project was designed to demonstrate interactive data analysis, visualization, and software engineering concepts through NFL statistics. It serves as a flagship portfolio project for technology, data, and specifically sports analytics internship opportunities.
